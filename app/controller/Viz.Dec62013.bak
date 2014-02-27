@@ -1,0 +1,121 @@
+Ext.define('DVSI.controller.Viz', {
+    extend: 'Ext.app.Controller',
+
+    refs: [
+        {
+        ref: 'vizToolbar',
+        selector: 'viztoolbar'
+        },
+        {
+        ref: 'vizChart',
+        selector: 'vizchart'
+        }
+    ],
+
+    stores: ['Data'],
+    
+    init: function() {
+
+        this.datafile = '';
+        this.support_vizmethod = '';
+        //this.vizdata = [];
+
+        // Start listening for events on views
+        this.control({
+            'viztoolbar': {
+                selectionchange: this.onVizSelect,
+                scope: this
+            },
+            'datasetlist': {
+                selectionchange: this.onNewDataSelect,
+                scope: this
+            }
+        });
+    },
+    
+    onLaunch: function() {
+        var dataStore = this.getDataStore();        
+        
+        // dataStore.load({
+        //     callback: this.onDataLoad,
+        //     scope: this
+        // });
+        
+        //this.vizdata = 
+    },
+
+    // onDataLoad: function() {
+    // },
+    
+    clearChart: function() {
+        var chart = this.getVizChart();
+        var chartSpace = $('#'+chart.id+'-innerCt');
+        chartSpace.empty();
+        chartSpace.html('<p>visualization chart</p>');
+            
+    },
+
+    onVizSelect: function(selModel, selection) {
+        // Fire an application wide event
+        this.application.fireEvent('vizstart', selection[0]);
+        //console.log("viz controller fire application level event: vizstart: ", selection[0].data);
+
+        // instead use another chart controller, draw chart here directly (test)
+        // draw parallelcoord chart for car dataset
+        var chart = this.getVizChart();
+
+        var width = Ext.get(chart.id).getWidth();
+        var height = Ext.get(chart.id).getHeight();
+        console.log("chart: ", chart.id, width, height);
+        console.log( $('#' + chart.id).get(0) );
+
+        $('#'+chart.id+'-innerCt').empty();
+        //console.log( $('#'+chart.id + '-innerCt')[0] );
+
+        // load data 
+
+        var vizmethod = selection[0].data.name;
+        console.log("current data file: ", this.datafile);
+        console.log("apply visualizaton style: ", vizmethod);
+
+        if( this.support_vizmethod.indexOf(vizmethod) === -1) {
+            $('#'+chart.id+'-innerCt').html('<p>visualization style not supported for current dataset</p>');
+            return;
+        }
+
+
+        var dataStore = this.getDataStore();
+        //var vizdata = dataStore.getRange();
+        var vizdata = Ext.pluck(dataStore.data.items, 'data');
+        //console.log(vizdata);
+        
+        //d3.csv(this.datafile, function(vizdata, error){
+            //d3 read csv and load data as json style
+
+            var drawchart = null;
+            if(vizmethod == "Tabular") drawchart = d3.chart.tabularChart();
+            else if (vizmethod == "ParallelCoord") drawchart = d3.chart.parallelCoordChart();
+
+            drawchart.width(width).height(height);
+            
+            d3.select("#" + chart.id + "-innerCt")
+            //d3.select("#" + chart.id)
+                .datum(vizdata)
+                .call(drawchart);
+        //});
+
+    },
+    
+    onNewDataSelect: function(field, selection) {
+        //console.log("viz controller: receive event selectionchange from datasetlist: ", selection[0]);
+        var selected = selection[0];
+
+        if(selected) {
+            //console.log("viz controller: dataset selected: ", selected.data);
+            this.datafile = selected.data.file;
+            this.support_vizmethod = selected.data.vizmethod;
+            this.clearChart();
+        }
+        
+    }
+});

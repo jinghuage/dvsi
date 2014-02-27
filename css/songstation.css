@@ -1,0 +1,46 @@
+.recentsongs
+{
+    background: #eee;
+}
+
+text {
+  font: 10px sans-serif;
+}
+
+rect {
+  fill: #aaa;
+}
+
+.axis text
+{
+  fill: #fff;
+}
+
+.axis .domain
+{
+  opacity: 0;
+}
+
+.tick
+{
+  stroke: #fff;
+}
+
+.node {
+  fill: rgb(31, 119, 180);
+  fill-opacity: .25; 
+  stroke: rgb(31, 119, 180);
+  stroke-width: 1px;
+}
+
+.leaf {
+  fill: #ff7f0e;
+  fill-opacity: 1;
+}
+
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}

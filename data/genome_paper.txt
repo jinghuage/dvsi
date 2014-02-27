@@ -1,0 +1,11 @@
+Efficient parallel and out of core algorithms for constructing large bi-directed de Bruijn graphs
+
+Author: Vamsi K Kundeti
+
+Graph name: 
+de Bruijn graphs
+KMer graph
+
+BMC Bioinfomatics
+
+

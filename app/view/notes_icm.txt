@@ -1,0 +1,17 @@
+Nucleosome Placement Options: 
+1. User Default Parameters
+2. Use Energy Calculations
+3. Specify Nucleosome Placement
+
+These options controls automatic placement of nucleosomes in the energy landscape.
+
+Energy Options: 
+K (stiffness of DNA) = MD-B.dat (XrayB.dat, XrayP.dat, idealB.dat)
+Xnuc (Nucleosome Geometry) = 01kx5.min (01Kx5.par)
+XDNA (Free DNA Geometry) = MD-B.par (XrayB.par, XrayP.par, idealB.par)
+
+Occupancy: 
+Occupancy: .70
+Linker Length: 20
+
+ 

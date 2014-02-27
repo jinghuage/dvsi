@@ -1,0 +1,381 @@
+Ext.define('DVSI.controller.Data', {
+    extend: 'Ext.app.Controller',
+
+    refs: [
+        {
+            ref: 'dataInfo',
+            selector: 'datainfo'
+        }, 
+        {
+            ref: 'datasetList',
+            selector: 'datasetlist'
+        }
+    ],
+
+    models: ['MetaData', 'Data'],
+    stores: ['Dataset', 'MetaData', 'Data'],
+
+    
+    init: function() {
+        this.datasetfilename = '';
+        this.metadata = null;
+        this.metatree = [];
+        this.columnsArr = {};
+        this.model_fields = {};
+        this.store_root = '';
+        this.array_data = [];
+        this.json_data = {};
+
+        this.control({
+            'datasetlist': {
+                selectionchange: this.onDataSelect,
+                scope: this
+            },
+            'datainfo #rawdata': {
+                activate: this.onRawData,
+                scope: this
+            },
+            'datainfo #rawdata #treepanel': { //alert: looks like too much nesting to me
+                itemclick: this.onMetaData,
+                scope: this
+            }
+        });
+
+        // Listen for an application wide event
+        this.application.on({
+            databasestart: this.onDatabaseStart,
+            scope: this
+        });
+    },
+    
+    onDatabaseStart: function(database) {
+
+        //console.log("data controller: receive application level event: databasestart, name:", database.get('name'));
+
+        var datasetList = this.getDatasetList();
+        datasetList.getSelectionModel().deselectAll();
+
+
+        var store = this.getDatasetStore();
+        //console.log("data controller: dataset store: ", store);
+
+
+        store.load({
+            callback: this.onDatasetLoad,
+            params: {
+                database: database.get('name')
+            },            
+            scope: this
+        });
+    },
+    
+    onDatasetLoad: function(data, request) {
+        //console.log("data controller: get request for event databasestart ", request.params);
+ 
+        var store = this.getDatasetStore(),
+            datasetList = this.getDatasetList();
+        
+        //datasetList.getSelectionModel();
+
+        // The data should already be filtered on the serverside but since we
+        // are loading static data we need to do this after we loaded all the data
+        store.clearFilter();
+        store.filter('database', request.params.database);
+        store.sort('opened_date', 'ASC');        
+
+        datasetList.getSelectionModel().select(store.last());
+    },
+    
+
+    onDataSelect: function(selModel, selection) {
+        //console.log("data controller: receive event selectionchange from datasetlist: ", selection[0]);
+        var selected = selection[0];
+
+        // Attention: selectionchange event will be fired if selectoin is lost, e.g. mouse click other grid
+        // in this case, selection will be undefined
+        // so must check selection before execute late code, otherwise error will occur
+        // and later code will not be executed either
+        if(selected) {
+            console.log("dataset selected: ", selection[0].data);
+
+            datasetfilename = selection[0].data.file;
+            metadata = selection[0].data.metadata;
+            console.log("metadata: ", metadata)
+            this.build_results_grid(metadata);
+
+
+            this.requestDataset();
+
+            // update html template
+            //this.getDataInfo().update(selection[0]);
+            if(selection[0])
+                this.getDataInfo().down('#about').update(selection[0].data);
+
+        }
+
+        this.getDataInfo().setActiveTab(0);
+        // var grid_panel = this.getDataInfo().down('#rawdata').down('#gridpanel');
+        // var tree_panel = this.getDataInfo().down('#rawdata').down('#treepanel');
+        // if(grid_panel) grid_panel.hide();
+        // if(tree_panel) tree_panel.hide();
+
+    },
+
+    onRawData: function() {
+        console.log("tab rawdata tap");
+        
+        //this.build_results_grid(datasetfields);
+        this.loadGrid(store_root);
+
+        //grid_panel.show();
+    },
+        
+    onMetaData: function(view, record, item, index, e, eOpts ) {
+        store_root = record.get('text');
+        console.log("tree click set store_root: ", store_root); 
+
+        this.loadGrid(store_root);
+    },
+
+    requestDataset: function() {
+        //need to request data and know the header fields to create store for grid
+        //var that = this;
+
+        if (datasetfilename != null && datasetfilename != "") {
+            Ext.Ajax.request({
+                url: 'data/' + datasetfilename,
+                scope: this,
+                success: function(result, request) {
+                    this.getData(result.responseText);
+                    //json_data = Ext.JSON.decode(result.responseText);
+                    //this.loadGrid();
+                },
+                failure: function(response, opts) {
+                    console.log('server-side failure with status code ' + response.status);
+                }
+            });
+        }
+    },
+
+    getData: function(response) {
+        console.log("getData");
+
+        json_data = {};
+        array_data = [];
+
+        if(datasetfilename.search(/.json$/) != -1) {
+            json_data = Ext.JSON.decode(response);
+            //console.log(json_data);
+
+        } else if(datasetfilename.search(/.csv$/) != -1) {
+            
+            var csvdata = response.split('\n');
+
+            //var header = csvdata[0].split(',');
+            //console.log(header);
+
+            //had so many problems when a csv file has DOS encoding style
+            //that is, there is an extra \r\n at the end of line
+            //so the last field turns out have a \r hanging onto it
+            //which causes JSON error "ILLEGL" token. 
+            //change to unix encoding fix the problem -- but I choose to use the 
+            //fields defined in alldata.json file now. 
+            //this.build_results_grid(header);
+
+            var header = metadata[0]['fields'];
+            console.log("header: ", header);
+
+
+            //array_data = [];
+            json_data[store_root] = [];
+            for (var d = 1; d < csvdata.length; d++) {
+                //for (var d = 1; d < 2; d++) {
+                var csvrecord = csvdata[d].split(',');
+                var r = csvrecord.map(function(d, i){ 
+                    return d.replace(/"/g, ''); 
+                });
+                //array_data.push(r);
+
+                var jsonrecord = {};
+                header.forEach(function(h, i){ jsonrecord[h] = r[i]; });
+                json_data[store_root].push(jsonrecord);
+            }
+
+            //console.log(array_data);
+        }
+    },
+
+    build_results_grid: function(metadata) {
+
+        console.log("build_results_grid");
+
+        model_fields = {};
+        columnsArr = {};
+        metatree = [];
+
+        metadata.forEach( function(m, mi){
+            var r = m.root;
+            var f = m.fields;
+            if(r===''){ r = 'default'; metatree = null; }
+            else {
+                metatree.push({text: r, leaf: true});
+            }
+            store_root = r;
+
+            
+            model_fields[r] = [];
+            columnsArr[r] = [];
+            f.forEach(function(h, hi){
+                model_fields[r].push({name: h, type: 'string'});
+                columnsArr[r].push({text: h, dataIndex: h});
+            });                   
+            //console.log(model_fields[r], columnsArr[r]);        
+        });
+
+        console.log(model_fields, columnsArr);        
+        console.log(metatree, store_root);        
+    },
+
+    loadGrid: function(root) {
+        console.log("data controller: loadGrid");
+        
+        var grid_panel = this.getDataInfo().down('#rawdata').down('#gridpanel');
+        var tree_panel = this.getDataInfo().down('#rawdata').down('#treepanel');
+        
+        var grid_model = this.getDataModel();
+        var grid_store = this.getDataStore();
+        var tree_store = this.getMetaDataStore();
+
+        if(metatree){
+            var treestoreroot = {expanded: true, children: metatree};
+            console.log("reset tree root to: ", treestoreroot);
+            //console.log(tree_store.getRootNode());
+            tree_store.setRootNode(treestoreroot);
+        }
+
+        //model_fields = [{name: "Description", type: "string"}];
+        //console.log(model_fields);
+
+        // var grid_model = Ext.create('Ext.data.Model', {
+        //     fields: model_fields,
+        //     proxy: {
+        //         type: 'memory',
+        //         reader: 'array'
+        //     }
+        // });
+
+
+        console.log("grid_model: change fields");
+        grid_model.setFields(model_fields[root]);
+        //grid_model.prototype.fields.removeAll();
+        //grid_model.prototype.fields.addAll(model_fields);
+
+
+        // var grid_store = Ext.create('Ext.data.Store', {
+        //     model: grid_model
+        // });
+
+        //array_data = [['0', '1', '2', '3', '4', '5', '6', '7', '8']];
+        console.log("grid_store: load raw data"); //, json_data[root]);
+        grid_store.loadRawData(json_data[root]);
+
+        //console.log("grid_store: get record");
+        //var d = Ext.pluck(grid_store.data.items, 'data');
+
+        if( grid_panel === null) {
+            console.log("create a grid panel for tab #rawdata");
+  
+            // var filterCombo = Ext.create('Ext.form.field.ComboBox', {
+            //     fieldLabel: 'Cylinder filter',
+            //     labelWidth: 70,
+            //     queryMode: 'local',
+            //     displayField: 'Cylinder',
+            //     valueField: 'cylinders',
+            //     store: ['4', '6', '8']
+            // });
+
+            // filterCombo.on('select', function(combo, records, opts) {
+            //     grid_store.clearFilter();
+            //     if(records.length > 0) {
+            //         var filterValue = records[0].get('Cylinder');
+            //         grid_store.filter('cylinders', filterValue);
+            //     }
+            // });
+                                         
+
+            // var searchTextField = Ext.create('Ext.form.field.Text', {
+            //     fieldLabel: 'Name Search',
+            //     enableKeyEvents: true,
+            //     listeners: {
+            //         keyup: {
+            //             fn: function(field, e){
+            //                 var val = field.getValue();
+            //                 grid_store.filterBy(function(record){
+            //                     return record.get('name').substring(0, val.length) === val;
+            //                 }, this);
+            //             },
+            //             buffer: 250
+            //         }
+            //     }
+            // });
+            
+            // var displayInfoField = Ext.create('Ext.form.field.Display', {
+            //     fieldLabel: 'Select Record',
+            //     name: 'gridinfo',
+            //     value: '10'
+            // });
+
+            grid_panel = Ext.create('Ext.grid.Panel', {
+                itemId: 'gridpanel',
+                //title: store_root,
+                store: grid_store,
+                // dockedItems: [{
+                //     xtype: 'toolbar',
+                //     dock: 'top',
+                //     items: [filterCombo, searchTextField]
+                // }, {
+                //     xtype: 'toolbar',
+                //     dock: 'bottom',
+                //     items: [displayInfoField]
+                // }],
+                columns: columnsArr[root],
+                width: 800,
+                height: 220
+                // bbar: Ext.create('Ext.PagingToolbar', {
+                //     store: grid_store,
+                //     displayInfo: true,
+                //     displayMsg: 'Displaying records {0} - {1} of {2}',
+                //     emptyMsg: 'No records to display'
+                // })
+            });
+
+            //grid_panel.getDockedItems()[1].add(searchTextField);
+
+            tree_panel = Ext.create('Ext.tree.Panel', {
+                itemId: 'treepanel',
+                title: 'data hierarchy',
+                store: tree_store,
+                flex: 1,
+                rootVisible: false
+            });
+
+            this.getDataInfo().down('#rawdata').add(grid_panel);
+            this.getDataInfo().down('#rawdata').add(tree_panel);
+        } else {
+
+            console.log("reconfigure grid panel with new grid store and columns");
+            grid_panel.reconfigure(grid_store, columnsArr[root]);
+
+            if(metatree) tree_panel.reconfigure(tree_store);
+        }
+
+        grid_panel.show();
+        if(metatree){
+            tree_panel.show();
+            tree_panel.getSelectionModel().select(record)
+        }
+        else tree_panel.hide();
+        
+    }
+
+});

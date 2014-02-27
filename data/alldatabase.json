@@ -1,0 +1,17 @@
+{
+    'success': true,    
+    'results': [
+        {'id': 1, 'name': 'Economy Record'}, 
+        {'id': 2, 'name': 'Medical Record'}, 
+        {'id': 3, 'name': 'Genome'},
+        {'id': 4, 'name': 'Finance'}, 
+        {'id': 5, 'name': 'Dependency Matrix'},
+        {'id': 6, 'name': 'Demography'},
+        {'id': 7, 'name': 'Hierarchy'},
+        {'id': 8, 'name': 'Federal'},
+        {'id': 9, 'name': 'Entertainment'},
+        {'id': 10, 'name': 'aidsinfo.nih web service', 'url': 'http://aidsinfo.nih.gov/api/drugs/{id}'},
+        {'id': 11, 'name': 'census.gov web service', 'url': 'http://api.census.gov/data/{category}/'},
+        {'id': 12, 'name': 'iris.edu web service', 'url':'http://service.iris.edu/irisws/timeseries/1/{query}'}
+    ]
+}

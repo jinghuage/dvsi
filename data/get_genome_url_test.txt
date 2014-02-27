@@ -1,0 +1,9 @@
+
+http://ws.bioinfo.cipf.es/cellbase/rest/latest/hsa/feature/karyotype/none/chromosome?of=json cellbase-manager.js:201
+http://ws.bioinfo.cipf.es/cellbase/rest/latest/hsa/feature/karyotype/none/chromosome?of=json cellbase-manager.js:201
+http://ws.bioinfo.cipf.es/cellbase/rest/latest/hsa/genomic/region/13/cytoband?of=json cellbase-manager.js:201
+http://ws.bioinfo.cipf.es/cellbase/rest/latest/hsa/genomic/region/13:32850000-32899999/gene?chromosome=13&resource=gene&dataType=data&of=json cellbase-manager.js:201
+http://ws.bioinfo.cipf.es/cellbase/rest/latest/hsa/genomic/region/13:32889211-32890127/sequence?chromosome=13&resource=sequence&of=json cellbase-manager.js:201
+http://ws.bioinfo.cipf.es/cellbase/rest/latest/hsa/genomic/region/13:328500…anscript=true&chromosome=13&resource=gene&dataType=withTranscripts&of=json cellbase-manager.js:201
+http://ws.bioinfo.cipf.es/cellbase/rest/latest/hsa/genomic/region/13:32880000-32899999/snp?chromosome=13&resource=snp&dataType=data&of=json cellbase-manager.js:201
+http://ws.bioinfo.cipf.es/cellbase/rest/latest/hsa/genomic/region/1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,Y,X/cytoband?of=json 

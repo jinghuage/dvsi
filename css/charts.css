@@ -1,0 +1,137 @@
+/* body { */
+/*   font: 10px sans-serif; */
+/* } */
+
+circle {
+  /* fill: rgb(31, 119, 180); */
+  /* fill-opacity: .0; */
+  stroke: rgb(31, 119, 180);
+  stroke-width: 0px;
+}
+
+.leaf circle {
+  fill: #ff7f0e;
+  fill-opacity: 1;
+}
+
+rect {
+  fill: #aaa;
+}
+
+.infobox {
+    /* background: yellow; */
+    stroke: black;
+    stroke-width: 1px;
+    display: block;
+    background-color: #eee;
+    position: absolute;
+    z-index: 100;
+}
+
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.area {
+  fill: lightsteelblue;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.dot {
+  fill: white;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+/* div.wheel { */
+/*   display: inline-block; */
+/* } */
+
+.group text {
+  font: 11px sans-serif;
+  pointer-events: none;
+}
+ 
+.group path {
+  stroke: #000;
+}
+ 
+path.chord {
+  stroke-width: .75;
+  fill-opacity: .75;
+}
+
+.background path {
+  fill: none;
+  stroke: #ccc;
+  stroke-opacity: .4;
+  shape-rendering: crispEdges;
+}
+
+.foreground path {
+  fill: none;
+  stroke: steelblue;
+  stroke-opacity: .7;
+}
+
+.brush .extent {
+  fill-opacity: .3;
+  stroke: #fff;
+  shape-rendering: crispEdges;
+}
+
+circle.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+line.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+
+/* for table */
+
+/* th, td { */
+/*     font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif; */
+/*     font-size:1em; */
+/*     padding-left:7px; */
+/*     padding-right:7px; */
+/*     padding-top:4px; */
+/*     padding-bottom:4px; */
+/*     vertical-align:middle; */
+/*     text-align:center; */
+/* } */
+
+/* th { */
+/*     color:white; */
+/*     background-color:steelblue; */
+/* } */
+
+
+/* td { */
+/*     border:1px solid steelblue; */
+/* } */
+
+/* td.rowkey { */
+/*     text-align:left; */
+/* } */
+
+
+/* tr:hover { */
+/*     color:#000000; */
+/*     background-color:#E0E0E0; */
+/* } */
+
+
+/* tr[chosen=true] { */
+/*     background-color:#B5CDE1; */
+/* } */
