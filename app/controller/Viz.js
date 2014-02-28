@@ -62,17 +62,37 @@ Ext.define('DVSI.controller.Viz', {
 
         this.setVizTool(record);
 
-        var property = this.getVizProperty();
+
+        // var property = Ext.create('DVSI.view.VizProperty', 
+        //                           { width: 500,
+        //                             height: 400, 
+        //                             floating: true, 
+        //                             closable: true});
+        // property.show();
+
+        Ext.create('Ext.window.Window', {
+            title: 'Viz Tool Configuration',
+            height: 200,
+            width: 400,    
+            layout: 'anchor',
+            anchor: '100%',
+            items: [{
+                xtype : 'vizproperty',
+            }]
+        }).show();
+
+
+
 
         var vizmethod = record.data.name;
-        console.log("selected visualizaton style: ", vizmethod);
+        console.log("onVizMethodSelect(): selected visualizaton style: ", vizmethod);
 
         // if( this.support_vizmethod.indexOf(vizmethod) === -1) {
         //     $('#'+chart.id+'-innerCt').html('<p>visualization style not supported for current dataset</p>');
         //     return;
         // }
 
-        //chart.removeAll();
+        var property = this.getVizProperty();
         property.setChartName(vizmethod);
         
     },
@@ -96,8 +116,8 @@ Ext.define('DVSI.controller.Viz', {
             var chart = this.getDrawChart();
             chart.clear();
 
-            var property = this.getVizProperty();
-            property.setChartName('empty');
+            //var property = this.getVizProperty();
+            //property.setChartName('empty');
 
         }
     },

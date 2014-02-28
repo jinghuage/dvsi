@@ -10,9 +10,9 @@ Ext.define('DVSI.view.VizProperty', {
                'DVSI.view.ICMChart'
                ],
     alias: 'widget.vizproperty',
-    title: 'current tool configuration -- ICM',
-    collapsible: true,
-    collapseDirection: 'right',
+    //title: 'current tool configuration',
+    //collapsible: true,
+    //collapseDirection: 'right',
 
     config: {
         chartName: 'Default',

@@ -30,9 +30,6 @@ Ext.define('DVSI.view.DataInfo', {
             type: 'hbox',
             align: 'stretch'
         }
-    },{
-        title: 'Genome Browser',
-        itemId: 'genomebrowser'
     }]
     
 });

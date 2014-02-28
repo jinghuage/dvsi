@@ -10,6 +10,7 @@ Ext.define('DVSI.view.Viewport', {
         'DVSI.view.GeneralToolbar', //view/GeneralToolbar.js
         'DVSI.view.DatabaseList', //view/DatabaseList.js
         'DVSI.view.Dataset',      //view/Dataset.js
+        'DVSI.view.MetaData',     //view/MetaData.js
         'DVSI.view.DataInfo',     //view/DataInfo.js
         'DVSI.view.VizProperty',  //view/VizProperty.js
         'DVSI.view.DrawChart'     //view/DrawChart.js
@@ -82,10 +83,13 @@ Ext.define('DVSI.view.Viewport', {
                 },
                 items: [{
                     xtype: 'databaselist',
-                    flex: 1
+                    height: 150
                 }, {
                     xtype: 'datasetlist',
-                    height: 250
+                    height: 150
+                },{
+                    xtype: 'metadata',
+                    flex: 1
                 }]
             },
             {
@@ -100,19 +104,8 @@ Ext.define('DVSI.view.Viewport', {
                     height: 250
                 },                
                 {
-                    xtype: 'panel',
-                    flex: 1,
-                    layout: {
-                        type: 'hbox',
-                        align: 'stretch'
-                    },
-                    items: [{
-                        xtype: 'drawchart',
-                        width: 920
-                    }, {
-                        xtype: 'vizproperty',
-                        flex: 1
-                    }]
+                    xtype: 'drawchart',
+                    flex: 1
                 }]
             }]
         };

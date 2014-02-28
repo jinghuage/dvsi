@@ -9,11 +9,15 @@ Ext.define('DVSI.controller.Data', {
         {
             ref: 'datasetList',
             selector: 'datasetlist'
+        },
+        {
+            ref: 'metadataPanel',
+            selector: 'metadata'
         }
     ],
 
-    models: ['TreeData', 'Data'],
-    stores: ['Dataset', 'Data', 'TreeData'],
+    models: ['TreeData', 'Data', 'MetaData'],
+    stores: ['Dataset', 'Data', 'TreeData', 'MetaData'],
 
     
     config: {
@@ -32,6 +36,10 @@ Ext.define('DVSI.controller.Data', {
         this.control({
             'datasetlist': {
                 selectionchange: this.onDataSelect,
+                scope: this
+            },
+            'metadata': { //treepanel : I use the event 'itemclick' instead of 'selectionchange'
+                itemclick: this.onMetaDataSelect,
                 scope: this
             },
             'datainfo #rawdata': {
@@ -168,7 +176,6 @@ Ext.define('DVSI.controller.Data', {
             tree_panel = Ext.create('Ext.tree.Panel', {
                 itemId: 'treepanel',
                 //title: 'data hierarchy',
-                title: 'genome browser seletions', 
                 store: tree_store,
                 rootVisible: false,
                 collapsible: true,
@@ -214,13 +221,10 @@ Ext.define('DVSI.controller.Data', {
         
 
 
-    // there is only one tree grid panel, either used to show meta data, or 
-    // native hierarchy data
-
     onTreeDataSelect: function(view, record, item, index, e, eOpts ) {
         
         if(this.getHierarchyStatus()) {
-            console.log("select data item: ", record.data);
+            console.log("onTreeDataSelect(): select data item: ", record.data);
 
             // add to selectedItems
             //this.getSelectedItems().push({'name': record.data.name});
@@ -234,7 +238,13 @@ Ext.define('DVSI.controller.Data', {
             this.application.fireEvent('treedataselect', this.getSelectedItems());
 
         }
-        else if(this.getMetaTree().children.length > 0) {
+
+    },
+
+    onMetaDataSelect: function(view, record, item, index, e, eOpts ) {
+        console.log("onMetaDataSelect(): select data item: ", record.data);
+
+        if(this.getMetaTree().children.length > 0) {
             var r = this.getStoreRoot();
             if(r != record.get('name')) {
                 this.setStoreRoot(record.get('name'));
@@ -378,10 +388,7 @@ Ext.define('DVSI.controller.Data', {
 
         console.log("read_metadata");
         
-        var data_roots = [{name:'Dalliance', id: 'Dalliance', leaf: true}, 
-                          {name: 'JBrowse', id: 'JBrowse', leaf: true},
-                          {name: 'GenomeMaps', id: 'GenomeMaps', leaf: true},
-                          {name: 'Genoverse', id: 'Genoverse', leaf: true}];
+        var data_roots = [];
         var model_fields = {};
         var column_Array = {};
         var is_hierarchy = false;
@@ -425,8 +432,33 @@ Ext.define('DVSI.controller.Data', {
         this.setHierarchyStatus(is_hierarchy);
 
         //console.log(this.getModelFields());
+
+
+        // refresh the metadata view
+        var meta_store = this.getMetaDataStore();
+        meta_store.setRootNode(this.getMetaTree());
+        meta_store.sync();
+
+        var meta_panel = this.getMetadataPanel();
+
+        // var columns = [{
+        //     xtype: 'treecolumn', //this is so we know which column will show the tree
+        //     text: 'Name',
+        //     flex: 1,
+        //     sortable: true,
+        //     dataIndex: 'name'
+        //     }];
+
+        // meta_panel.reconfigure(meta_store, columns);
+        meta_panel.getView().refresh();
+
+        var record = meta_store.getNodeById(this.getStoreRoot());
+        console.log("select record: ", record.data);
+
+        meta_panel.getSelectionModel().select(record);   
       
     },
+
 
     mycopy: function(oldObject) {
         // Shallow copy
@@ -448,12 +480,11 @@ Ext.define('DVSI.controller.Data', {
         var tree_store = this.getTreeDataStore();
 
 
-        var metatree = this.getMetaTree();
         var is_hierarchy = this.getHierarchyStatus();
         var json_data = this.getJsonData();
 
-        console.log("metatree: ", metatree);
-        console.log("json_data: ", json_data);
+
+        //console.log("json_data: ", json_data);
 
         if(is_hierarchy) {
 
@@ -487,30 +518,10 @@ Ext.define('DVSI.controller.Data', {
             });
             //console.log(columns);
             tree_panel.reconfigure(tree_store, columns);
+            tree_panel.show();
 
-        }
-        else if(metatree.children.length > 0){
-            
-
-            tree_store.setRootNode(metatree);
-
-            var columns = [{
-                xtype: 'treecolumn', //this is so we know which column will show the tree
-                text: 'Name',
-                flex: 1,
-                sortable: true,
-                dataIndex: 'name'
-                }];
-
-            tree_panel.reconfigure(tree_store, columns);
-
-            var record = tree_store.getNodeById(this.getStoreRoot());
-            //console.log("select record: ", record);
-            tree_panel.getSelectionModel().select(record);            
-        }
-
-        tree_panel.show();
-
+        }        
+        else tree_panel.hide();
 
     },
 

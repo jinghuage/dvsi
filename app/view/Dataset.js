@@ -5,7 +5,8 @@ Ext.define('DVSI.view.Dataset', {
     store: 'Dataset',
     title: 'Dataset List',
     hideHeaders: true,
-    
+    collapsible: true,
+
     initComponent: function() {
         this.columns = [{
             dataIndex: 'name',

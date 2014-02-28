@@ -83,7 +83,7 @@ Ext.define('DVSI.view.D3ForceChart', {
         console.log( $('#' + chartid)[0]);
 
         //var drawchart = d3.chart.circlePackChart();
-        var drawchart = d3.chart.circlePackChart();
+        var drawchart = d3.chart.forceChart();
 
         drawchart.width(width).height(height);
 
@@ -98,8 +98,12 @@ Ext.define('DVSI.view.D3ForceChart', {
         }
         //else drawchart.selectedItems([]);
 
-        drawchart.label(function(d) { return d[labelfield]; })
-                 .value(function(d) { return +d[valuefield]; });
+        //drawchart.label(function(d) { return d[labelfield]; })
+        //         .value(function(d) { return +d[valuefield]; });
+        drawchart
+            .label(labelfield).value(valuefield)
+            .sort(sortby).color(colorby);
+        
 
         //var formatDate = d3.time.format("%b %Y");
 

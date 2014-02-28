@@ -5,7 +5,8 @@ Ext.define('DVSI.view.DatabaseList', {
     store: 'Database',
     title: 'Database List',
     hideHeaders: true,
-    
+    collapsible: true,
+
     initComponent: function() {
         this.columns = [{
             dataIndex: 'name',
