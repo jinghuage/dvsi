@@ -98,40 +98,23 @@ line.link {
   stroke-opacity: .6;
 }
 
-/* for table */
+.node rect {
+  cursor: move;
+  fill-opacity: .9;
+  shape-rendering: crispEdges;
+}
 
-/* th, td { */
-/*     font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif; */
-/*     font-size:1em; */
-/*     padding-left:7px; */
-/*     padding-right:7px; */
-/*     padding-top:4px; */
-/*     padding-bottom:4px; */
-/*     vertical-align:middle; */
-/*     text-align:center; */
-/* } */
+.node text {
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff;
+}
 
-/* th { */
-/*     color:white; */
-/*     background-color:steelblue; */
-/* } */
+.link {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .2;
+}
 
-
-/* td { */
-/*     border:1px solid steelblue; */
-/* } */
-
-/* td.rowkey { */
-/*     text-align:left; */
-/* } */
-
-
-/* tr:hover { */
-/*     color:#000000; */
-/*     background-color:#E0E0E0; */
-/* } */
-
-
-/* tr[chosen=true] { */
-/*     background-color:#B5CDE1; */
-/* } */
+.link:hover {
+  stroke-opacity: .5;
+}

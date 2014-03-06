@@ -43,7 +43,7 @@ Ext.define('DVSI.view.D3FlowChart', {
                 itemId: 'datafield-value',
                 fieldLabel: 'datafield(value)',
                 labelWidth: 80,
-                value: 'size'
+                value: 'value'
             }]
 
         });
@@ -83,7 +83,7 @@ Ext.define('DVSI.view.D3FlowChart', {
         console.log( $('#' + chartid)[0]);
 
         //var drawchart = d3.chart.circlePackChart();
-        var drawchart = d3.chart.circlePackChart();
+        var drawchart = d3.chart.sankeyFlowChart();
 
         drawchart.width(width).height(height);
 
@@ -92,7 +92,7 @@ Ext.define('DVSI.view.D3FlowChart', {
 
             //var dataController = this.getController('Data');
             //var selectedItems = dataController.getSelectedItems();
-            console.log(" selectedItems for cirlepack chart: ", selection);
+            console.log(" selectedItems for flow chart: ", selection);
 
             drawchart.selectedItems(selection);
         }

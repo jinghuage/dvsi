@@ -7,7 +7,7 @@ Ext.define('DVSI.view.VizProperty', {
                'DVSI.view.D3DendrogramChart',
                'DVSI.view.D3ForceChart',
                'DVSI.view.D3FlowChart',
-               'DVSI.view.ICMChart'
+               'DVSI.view.D3DWheelChart'
                ],
     alias: 'widget.vizproperty',
     //title: 'current tool configuration',
@@ -58,8 +58,8 @@ Ext.define('DVSI.view.VizProperty', {
                 xtype: 'flowchart',
                 itemId: 'chart-Flow'
                 },{
-                xtype: 'icmchart',
-                itemId: 'chart-ICM'
+                xtype: 'dwheelchart',
+                itemId: 'chart-DWheel'
                 }
             ]
         });

@@ -9,7 +9,7 @@ d3.chart.sankeyFlowChart = function() {
     var width = 960,
     height = 200,
     selectedItems = [],
-    margin = {top: 60, right: 20, bottom: 60, left: 20},
+    margin = {top: 10, right: 20, bottom: 10, left: 20},
     padding = 10;
 
     var nodesField = "nodes",
@@ -45,12 +45,12 @@ d3.chart.sankeyFlowChart = function() {
             //console.log(links);
 
             // make sure links array has attribute value -- d3.sankey assumes
-            if( d3.keys(links).indexOf("value") == -1){
-                links = links.map(function(d,i){ 
-                    d.value = d[valueField];
-                    return d;
-                });
-            }
+            // if( d3.keys(links).indexOf("value") == -1){
+            //     links = links.map(function(d,i){ 
+            //         d.value = d[valueField];
+            //         return d;
+            //     });
+            // }
 
 
             var sankey = d3.sankey()
@@ -69,12 +69,19 @@ d3.chart.sankeyFlowChart = function() {
             //var strokecolor = d3.scale.category20c();
 
 
-            var svg = d3.select(this).append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
+            // Select the svg element, if it exists.
+            var svg = d3.select(this).selectAll("svg").data([data]);
+
+            if(svg[0][0] === null) svg = svg.enter().append("svg");
+
+            
+            svg.attr("width", width)
+                .attr("height", height);
+
+            var graphg = svg.append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top +")");
 
+            //console.log(svg.node());
 
             // begin to draw sankey graph
             sankey.nodes(nodes)
@@ -84,7 +91,7 @@ d3.chart.sankeyFlowChart = function() {
             //console.log(nodes);
             //console.log(links);
 
-            var link = svg.append("g").selectAll(".link")
+            var link = graphg.append("g").selectAll(".link")
             .data(links)
             .enter().append("path")
             .attr("class", "link")
@@ -95,7 +102,7 @@ d3.chart.sankeyFlowChart = function() {
             link.append("title")
             .text(function(d){ return d.source[labelField] + " -> " + d.target[labelField] + "\n" + format(d.value); });
 
-            var node = svg.append("g").selectAll(".node")
+            var node = graphg.append("g").selectAll(".node")
             .data(nodes)
             .enter().append("g")
             .attr("class", "node")
