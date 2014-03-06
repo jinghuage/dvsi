@@ -5,7 +5,7 @@ Ext.define('DVSI.view.D3SeriesChart', {
     autoScroll: true,
     //collapsible: true,
     //collapseDirection: 'left',
-    bodyStyle: 'padding: 5px 5px 0 5px;',
+    bodyStyle: 'padding: 5px;',
     
     // Fields will be arranged vertically, stretched to full width
     layout: 'anchor',
@@ -21,53 +21,118 @@ Ext.define('DVSI.view.D3SeriesChart', {
         var me = this;
 
         Ext.applyIf(me,  { 
+            // layout: {
+            //     type: 'vbox',
+            //     align: 'stretch'
+            // },
+            // //border: false,
+            // bodyPadding: 10,
+
             items: [{
-                //xtype: 'textfield',
-                itemId: 'slider',
-                fieldLabel: 'slider',
-                labelWidth: 80,
-                value: 'Default'
-            }, {
-                xtype: 'checkboxfield',
-                boxLabel: 'Format as Time',
-                checked: false,
-                itemId: 'istime'
-            },
-            {
-                //xtype: 'textfield',
-                itemId: 'datafields',
-                fieldLabel: 'datafields',
-                labelWidth: 80,
-                value: 'economy, cylinders, displacement'
-            }, {
-                xtype: 'checkboxfield',
-                boxLabel: 'All Fields',
-                checked: false,
-                itemId: 'selectallfields'
+                xtype: 'fieldcontainer',
+                fieldLabel: 'X axis',
+                labelStyle: 'font-weight:bold;',
+                layout: 'hbox',
+                defaultType: 'textfield',
+
+                // fieldDefaults: {
+                //     labelAlign: 'top'
+                // },
+                
+                items: [{
+                    flex: 1,
+                    itemId: 'xfield',
+                    fieldLabel: 'datafield',
+                    labelWidth: 60,
+                    value: 'Default',
+                    allowBlank: false
+                }, {
+                    width: 100,
+                    xtype: 'checkboxfield',
+                    boxLabel: 'Time',
+                    checked: false,
+                    margins: '0 0 0 10',
+                    itemId: 'istime'
+                }]
+            },{                
+                xtype: 'fieldcontainer',
+                fieldLabel: 'Plots',
+                labelStyle: 'font-weight:bold;padding:0;',
+                layout: 'hbox',
+                defaultType: 'textfield',
+
+                // fieldDefaults: {
+                //     labelAlign: 'top'
+                // },
+
+                items: [{
+                    flex: 1,
+                    itemId: 'plotfields',
+                    fieldLabel: 'datafields',
+                    labelWidth: 60,
+                    value: 'economy, cylinders, displacement',
+                    allowBlank: false
+                }, {
+                    width: 100,
+                    xtype: 'checkboxfield',
+                    boxLabel: 'All Fields',
+                    checked: false,
+                    margins: '0 0 0 10',
+                    itemId: 'selectallfields'
+                }]
+            },{                
+                xtype: 'fieldcontainer',
+                fieldLabel: 'Legend',
+                labelStyle: 'font-weight:bold;padding:0;',
+                layout: 'hbox',
+                defaultType: 'textfield',
+
+                // fieldDefaults: {
+                //     labelAlign: 'top'
+                // },
+
+                items: [{
+                    flex: 1,
+                    itemId: 'legendfield',
+                    fieldLabel: 'datafield',
+                    labelWidth: 60,
+                    value: 'name',
+                    allowBlank: true
+                }, {
+                    width: 100,
+                    xtype: 'checkboxfield',
+                    boxLabel: 'Color Block',
+                    checked: true,
+                    margins: '0 0 0 10',
+                    itemId: 'colorblocklegend'
+                }]
             },{
                 xtype      : 'fieldcontainer',
                 fieldLabel : 'graphStyle',
+                labelStyle: 'font-weight:bold;padding:0;',
+                layout: 'hbox',
                 defaultType: 'radiofield',
-                items: [
-                    {
-                        boxLabel  : 'Bar',
-                        name      : 'graphStyle',
-                        inputValue: '1',
-                        itemId    : 'barstyle'
-                    }, {
-                        boxLabel  : 'Area',
-                        name      : 'graphStyle',
-                        inputValue: '2',
-                        checked   : true,
-                        itemId    : 'areastyle'
-                    }
-                ]
+
+                items: [{
+                    width: 120,
+                    boxLabel  : 'Bar',
+                    name      : 'graphStyle',
+                    inputValue: '1',
+                    itemId    : 'barstyle'
+                }, {
+                    boxLabel  : 'Area',
+                    name      : 'graphStyle',
+                    inputValue: '2',
+                    checked   : true,
+                    itemId    : 'areastyle'
+                }]
+                
             },{
                 xtype: 'checkboxfield',
                 boxLabel: 'Stack Graphs',
                 checked: false,
                 itemId: 'stack'
-             }]
+            }]
 
         });
 
@@ -86,16 +151,18 @@ Ext.define('DVSI.view.D3SeriesChart', {
 
         //this.clear();
 
-        var slider = this.down('#slider').getValue();
+        var xfield = this.down('#xfield').getValue();
         var time = this.down('#istime').getValue();
-        var datafields = this.down('#datafields').getValue();
+        var plotfields = this.down('#plotfields').getValue();
         var selectall = this.down('#selectallfields').getValue(); //true or false
+        var legendfield = this.down('#legendfield').getValue();
+        var colorblock = this.down('#colorblocklegend').getValue();
         var style = 'bar';
         if( this.down('#areastyle').getValue() ) style = 'area';
 
         var stack = this.down('#stack').getValue(); //true or false
 
-        console.log(slider, datafields, selectall, style, stack);
+        console.log(xfield, plotfields, legendfield, selectall, style, stack);
         
         //var bodyid = this.down('#chartarea').id;
         var width = Ext.get(chartid).getWidth();
@@ -126,9 +193,10 @@ Ext.define('DVSI.view.D3SeriesChart', {
 
         var df = [];
         if(selectall) df = ['all'];
-        else df = datafields.split(', ');
-        drawchart.seriesfield({'name': slider, 'time': time})
-                 .datafields(df)
+        else df = plotfields.split(', ');
+        drawchart.xfield({'name': xfield, 'time': time})
+                 .plotfields(df)
+                 .legendfield(legendfield)
                  .graphstyle(style)
                  .stack(stack);
 

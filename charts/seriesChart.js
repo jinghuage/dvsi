@@ -12,8 +12,9 @@ d3.chart.seriesChart = function(){
     margin = {top: 10, right: 10, bottom: 100, left: 40},
     margin2 = {top: 10, right: 10, bottom: 10, left: 40};
 
-    var dataFields = ['economy'];
-    var series = {'name': 'Default', 'time': false};
+    var plotFields = ['economy'];
+    var xField = {'name': 'Default', 'time': false};
+    var legendField = 'date'; //'name'
     var graphStyle = 'bar';
     var stack = false;
     
@@ -40,24 +41,24 @@ d3.chart.seriesChart = function(){
             
             console.log(keys, keyvarieties, keypos);
 
-            if(dataFields.indexOf('all') > -1) dataFields = keys;
+            if(plotFields.indexOf('all') > -1) plotFields = keys;
             else{
-                dataFields = dataFields.map(function(d, di){
+                plotFields = plotFields.map(function(d, di){
                     var m = keyvarieties.indexOf(d);
                     if(m > -1) return keys[keypos[m]];
                     else return 'nonexist';
                 });
-                //console.log("all dataFields: ", dataFields);
-                while((m = dataFields.indexOf('nonexist')) !== -1) {
-                    dataFields.splice(m, 1);
+                //console.log("all plotFields: ", plotFields);
+                while((m = plotFields.indexOf('nonexist')) !== -1) {
+                    plotFields.splice(m, 1);
                 }
             }
-            console.log('cleaned dataFields: ', dataFields);
+            console.log('cleaned plotFields: ', plotFields);
             
-            var m = keyvarieties.indexOf(series.name);
-            if(m > -1) series.name = keys[keypos[m]];
-            else series.name = 'Default';
-            console.log('series: ', series);
+            var m = keyvarieties.indexOf(xField.name);
+            if(m > -1) xField.name = keys[keypos[m]];
+            else xField.name = 'Default';
+            console.log('xField: ', xField);
 
 
 
@@ -100,10 +101,10 @@ d3.chart.seriesChart = function(){
 
 
             var seriesScale;
-            if(series.time) seriesScale = d3.time.scale().range([0, w]);
+            if(xField.time) seriesScale = d3.time.scale().range([0, w]);
             else seriesScale = d3.scale.linear().range([0, w]);
             seriesScale.domain(d3.extent(data, function(d, i){
-                return +d[series.name];
+                return +d[xField.name];
             }));
 
             console.log(seriesScale.domain());
@@ -111,7 +112,7 @@ d3.chart.seriesChart = function(){
             var seriesAxis = d3.svg.axis().scale(seriesScale).orient('top').tickSize(6, 0);
 
             function X(d) {
-                return seriesScale(+d[series.name]);
+                return seriesScale(+d[xField.name]);
             }
 
             //-----------------------------------------------------------------------------
@@ -122,11 +123,11 @@ d3.chart.seriesChart = function(){
 
             var base = d3.scale.ordinal()
                    .rangeBands([h, 0], inpadding, outpadding)
-                   .domain(dataFields);
+                   .domain(plotFields);
 
             console.log(base.rangeBand(), base.rangeExtent());
 
-            dataFields.forEach(function(d,i){
+            plotFields.forEach(function(d,i){
                 console.log(d, base(d));
             });
 
@@ -145,7 +146,7 @@ d3.chart.seriesChart = function(){
 
 
             function draw_graphs() {
-                dataFields.forEach(function(d, i){
+                plotFields.forEach(function(d, i){
 
                     var fieldname = d;
                     var fieldnum = i;
@@ -160,7 +161,7 @@ d3.chart.seriesChart = function(){
                         basediff = 0;
                     }
                     else {
-                        graphbase = base(dataFields[dataFields.length-1]);
+                        graphbase = base(plotFields[plotFields.length-1]);
                         basediff = s - graphbase;
                     }
                     console.log(graphbase, basediff);
@@ -229,7 +230,7 @@ d3.chart.seriesChart = function(){
 
                             //yScales.forEach(function(ys,yi){ 
                             for(var yi=0; yi<=fieldnum; yi++){
-                                var fn = dataFields[yi];
+                                var fn = plotFields[yi];
                                 var ys = yScales[yi];
                                 result += ys(+d[fn]);
                             }
@@ -302,14 +303,14 @@ d3.chart.seriesChart = function(){
                    .attr("y", 0)
                    .attr("width", space)
                    .attr("height", 12)
-                   .style("fill", function(d){ return color(d.name.split(' ')[0]); });
+                   .style("fill", function(d){ return color(d[legendField].split(' ')[0]); });
 
                 legend.append("text")
                    .attr("x", X)
                    .attr("y", 7)
                    .attr("dy", ".35em")
                    .text(function(d){
-                       if(space > 6) return d.name.substring(0,1);
+                       if(space > 6) return d[legendField].substring(0,1);
                        else return '';
                    });
             };
@@ -324,7 +325,7 @@ d3.chart.seriesChart = function(){
                     .on("brush", brushed);
 
 
-                var extent;
+                var extent=[0,0];
 
                 function brushed() {
                     if(brush.empty()) return; //must check empty otherwise extent() return infinity
@@ -342,7 +343,7 @@ d3.chart.seriesChart = function(){
                         .text(function(d){return d.toString().substring(0,3);});
 
 
-                    console.log(extent);
+                    //console.log(extent);
                     seriesScale.domain(brush.empty() ? seriesScale.domain() : extent);
 
                     graphs.forEach(function(g,i){
@@ -364,18 +365,21 @@ d3.chart.seriesChart = function(){
                         .attr("width", space);
                     legend.selectAll("text").attr("x", X)
                         .text(function(d){
-                            if(space > 6) return d.name.substring(0,1);
+                            if(space > 6) return d[legendField].substring(0, space/8);
                             else return '';
                         });
                 }
 
                 //d3.selectAll(".brush").call(brush.clear());
                 //-----------------------------------------------------------------------------
-                var pextent = [0,0]; //cash brush extent when zoom start
+                //now we implement direct on-graph pan (not using the slider)
+                //which will update slider correspondingly
+
+                var pextent = [0,0]; //cache brush extent when zoom start
                 var zoom = d3.behavior.zoom()
-                    .scale(1)
-                    .scaleExtent([1, 8])
-                    //.translate([0, 0])
+                    //.scale(1)
+                    //.scaleExtent([1, 8])
+                    .translate([0, 0])
                     .on("zoom", zoomed,false)
                     .on("zoomstart", function(){ 
                         pextent[0] = extent[0]; pextent[1] = extent[1]; 
@@ -392,12 +396,13 @@ d3.chart.seriesChart = function(){
                     var xpan = ntrl[0] / 10;
 
                     var domain = brushScale.domain();
-                    console.log(pextent, xpan, domain);
+                    //console.log(pextent, xpan, domain);
                     if((pextent[0] + xpan) < domain[0]) xpan = domain[0]-pextent[0];
                     if((pextent[1] + xpan) > domain[1]) xpan = domain[1]-pextent[1];
+                    //console.log("xpan: ", xpan);
 
                     var newextent = [pextent[0]+xpan, pextent[1]+xpan];
-                    console.log(pextent, newextent);
+                    //console.log("p and n extent: ", pextent, newextent);
                     d3.selectAll(".brush").call(brush.extent(newextent));
                     brushed();
                     
@@ -468,15 +473,21 @@ d3.chart.seriesChart = function(){
         return chart;
     };
 
-    chart.seriesfield = function(_) {
-        if (!arguments.length) return series;
-        series = _;
+    chart.xfield = function(_) {
+        if (!arguments.length) return xField;
+        xField = _;
         return chart;
     };
 
-    chart.datafields = function(_) {
-        if (!arguments.length) return dataFields;
-        dataFields = _;
+    chart.legendfield = function(_) {
+        if (!arguments.length) return legendField;
+        legendField = _;
+        return chart;
+    };
+
+    chart.plotfields = function(_) {
+        if (!arguments.length) return plotFields;
+        plotFields = _;
         return chart;
     };
 

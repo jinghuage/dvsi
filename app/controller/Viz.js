@@ -72,7 +72,7 @@ Ext.define('DVSI.controller.Viz', {
 
         Ext.create('Ext.window.Window', {
             title: 'Viz Tool Configuration',
-            height: 200,
+            height: 300,
             width: 400,    
             layout: 'anchor',
             anchor: '100%',
