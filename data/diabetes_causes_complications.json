@@ -1,0 +1,27 @@
+
+{"nodes":[
+{"name":"Diabetes", "desc": ""},
+{"name":"Heart Disease", "desc": "In 2004, heart disease was noted on 68 percent of diabetes-related death certificates among people ages 65 years or older"},
+{"name":"Stroke", "desc":"In 2004, stroke was noted on 16 percent of diabetes-related death certificates among people ages 65 years or older"},
+{"name":"Hypertension", "desc":"In 2005–2008, of adults ages 20 years or older with self-reported diabetes, 67 percent had blood pressure greater than or equal to 140/90 millimeters of mercury (mmHg) or used prescription medications for hypertension."},
+{"name":"Eye Complications", "desc": "In 2005–2008, 4.2 million—28.5 percent—people with diabetes ages 40 years or older had diabetic retinopathy"},
+{"name":"Kidney Disease", "desc": "Diabetes is the leading cause of kidney failure, accounting for 44 percent of all new cases of kidney failure in 2008"},
+{"name":"Nerve Damage (neuropathy)", "desc": "About 60 to 70 percent of people with diabetes have mild to severe forms of nervous system damage"},
+{"name":"Foot Problems", "desc":"Almost 30 percent of people with diabetes ages 40 years or older have impaired sensation in the feet"},
+{"name":"Depression", "desc": "People with diabetes are twice as likely to have depression, depression is associated with a 60 percent increased risk of developing type 2 diabetes."},
+{"name":"Dental Disease", "desc":"About one-third of people with diabetes have severe periodontal disease"},
+{"name":"Complications of Pregnancy", "desc":"major birth defects in 5 to 10 percent of pregnancies and spontaneous abortions in 15 to 20 percent of pregnancies."},
+],
+"links":[
+{"source":0,"target":1,"value":0.68},
+{"source":0,"target":2,"value":0.16},
+{"source":0,"target":3,"value":0.67},
+{"source":0,"target":4,"value":0.285},
+{"source":0,"target":5,"value":0.44},
+{"source":0,"target":6,"value":0.65},
+{"source":0,"target":7,"value":0.3},
+{"source":0,"target":8,"value":0.2},
+{"source":0,"target":9,"value":0.33},
+{"source":0,"target":10,"value":0.15},
+{"source":8,"target":0,"value":0.6}
+]}
