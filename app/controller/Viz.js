@@ -22,7 +22,8 @@ Ext.define('DVSI.controller.Viz', {
     config: {
         vizTool: null,
         vizData: null,
-        vizSelection: ['none']
+        vizSelection: ['none'],
+        vizConfigWin: null
     },
     
     init: function() {
@@ -44,6 +45,10 @@ Ext.define('DVSI.controller.Viz', {
             'vizproperty button[action=draw-chart]': {
                 click: this.onApplyViz,
                 scope: this
+            },
+            'vizconfig': {
+                close: this.clearVizMethod,
+                scope: this
             }
 
         });
@@ -52,6 +57,21 @@ Ext.define('DVSI.controller.Viz', {
             'treedataselect': this.onDataItemSelect,
             scope: this
         });
+
+
+        Ext.define('DVSI.view.VizConfigWindow', {
+            extend: 'Ext.window.Window',
+            alias: 'widget.vizconfig',
+            title: 'Viz Tool Configuration',
+            height: 300,
+            width: 400, 
+            closeAction: 'hide',
+            layout: 'anchor',
+            anchor: '100%',
+            items: [{
+                xtype : 'vizproperty',
+            }]
+        });
     },
     
     // onClick: function() {
@@ -59,6 +79,9 @@ Ext.define('DVSI.controller.Viz', {
     // },
 
     onVizMethodSelect: function(selModel, record) {
+
+        var vizmethod = record.data.name;
+        console.log("onVizMethodSelect(): selected visualizaton style: ", vizmethod);
 
         this.setVizTool(record);
 
@@ -70,22 +93,27 @@ Ext.define('DVSI.controller.Viz', {
         //                             closable: true});
         // property.show();
 
-        Ext.create('Ext.window.Window', {
-            title: 'Viz Tool Configuration',
-            height: 300,
-            width: 400,    
-            layout: 'anchor',
-            anchor: '100%',
-            items: [{
-                xtype : 'vizproperty',
-            }]
-        }).show();
+        // a window is movable, which is better than a fixed panel
+        // Ext.create('Ext.window.Window', {
+        //     title: 'Viz Tool Configuration',
+        //     height: 300,
+        //     width: 400,    
+        //     layout: 'anchor',
+        //     anchor: '100%',
+        //     items: [{
+        //         xtype : 'vizproperty',
+        //     }]
+        // }).show();
+
+        var vizconfigwin = this.getVizConfigWin();
+        if(vizconfigwin === null) {
+            vizconfigwin = Ext.create('DVSI.view.VizConfigWindow');
+            this.setVizConfigWin(vizconfigwin);
+        }
+        vizconfigwin.show();
 
 
 
-
-        var vizmethod = record.data.name;
-        console.log("onVizMethodSelect(): selected visualizaton style: ", vizmethod);
 
         // if( this.support_vizmethod.indexOf(vizmethod) === -1) {
         //     $('#'+chart.id+'-innerCt').html('<p>visualization style not supported for current dataset</p>');
@@ -98,19 +126,25 @@ Ext.define('DVSI.controller.Viz', {
     },
 
 
+    
+    clearVizMethod: function() {
+
+        var viztb = this.getVizToolbar();
+        viztb.deselect(this.getVizTool());
+
+        //this.setVizTool(null);
+
+    },
+
     onNewDataSelect: function(field, selection) {
         //console.log("viz controller: receive event selectionchange from datasetlist: ", selection[0]);
         var selected = selection[0];
 
         if(selected) {
             //console.log("viz controller: dataset selected: ", selected.data);
-            //this.datafile = selected.data.file;
-            //this.support_vizmethod = selected.data.vizmethod;
-            //this.clearChart();
 
 
-            var viztb = this.getVizToolbar();
-            viztb.deselect(this.getVizTool());
+            this.clearVizMethod();
             this.setVizTool(null);
 
             var chart = this.getDrawChart();
