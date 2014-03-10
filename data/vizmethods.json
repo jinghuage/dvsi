@@ -4,7 +4,6 @@
         {'id': 1, 'used_date': 4, 'name': 'DWheel', 'icon': 'images/dw.png'}, 
         {'id': 2, 'used_date': 3, 'name': 'Series', 'icon': 'images/ts.png'}, 
         {'id': 3, 'used_date': 2, 'name': 'Force', 'icon': 'images/gp.png'},
-        {'id': 4, 'used_date': 2, 'name': 'SunBurn', 'icon': 'images/sb.png'},
         {'id': 5, 'used_date': 4, 'name': 'ParallelCoord', 'icon': 'images/pc.png'},
         {'id': 6, 'used_date': 4, 'name': 'Flow', 'icon': 'images/sf.png'},        
         {'id': 8, 'used_date': 4, 'name': 'CirclePack', 'icon': 'images/cp.png'},     

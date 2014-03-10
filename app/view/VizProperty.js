@@ -7,7 +7,9 @@ Ext.define('DVSI.view.VizProperty', {
                'DVSI.view.D3DendrogramChart',
                'DVSI.view.D3ForceChart',
                'DVSI.view.D3FlowChart',
-               'DVSI.view.D3DWheelChart'
+               'DVSI.view.D3DWheelChart',
+               'DVSI.view.D3ChoroplethChart',
+               'DVSI.view.D3NetworkChart'
                ],
     alias: 'widget.vizproperty',
     //title: 'current tool configuration',
@@ -19,6 +21,10 @@ Ext.define('DVSI.view.VizProperty', {
         autoDraw: false
     },
 
+    border: false,
+    padding: 0,
+    width: 390,
+    height: 270,
 
     layout: 'card',
 
@@ -60,6 +66,12 @@ Ext.define('DVSI.view.VizProperty', {
                 },{
                 xtype: 'dwheelchart',
                 itemId: 'chart-DWheel'
+                },{
+                xtype: 'choroplethchart',
+                itemId: 'chart-Choropleth'
+                },{
+                xtype: 'networkchart',
+                itemId: 'chart-Network'
                 }
             ]
         });

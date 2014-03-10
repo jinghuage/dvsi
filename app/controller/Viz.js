@@ -66,8 +66,8 @@ Ext.define('DVSI.controller.Viz', {
             height: 300,
             width: 400, 
             closeAction: 'hide',
-            layout: 'anchor',
-            anchor: '100%',
+            layout: 'fit',
+            plain:true,
             items: [{
                 xtype : 'vizproperty',
             }]

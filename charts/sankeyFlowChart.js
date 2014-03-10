@@ -45,7 +45,7 @@ d3.chart.sankeyFlowChart = function() {
             //console.log(links);
 
             // make sure links array has attribute value -- d3.sankey assumes
-            // if( d3.keys(links).indexOf("value") == -1){
+            // if( d3.keys(links[0]).indexOf("value") == -1){
             //     links = links.map(function(d,i){ 
             //         d.value = d[valueField];
             //         return d;

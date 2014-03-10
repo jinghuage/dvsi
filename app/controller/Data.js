@@ -119,8 +119,8 @@ Ext.define('DVSI.controller.Data', {
             var df = selection[0].data.file;
             var metadata = selection[0].data.metadata;
 
-            this.read_metadata(metadata);
-            this.requestDataset(df);
+            if(metadata) this.read_metadata(metadata);
+            if(df) this.requestDataset(df);
 
             this.setContentChange(true);
 
@@ -339,6 +339,28 @@ Ext.define('DVSI.controller.Data', {
                 //console.log("decorate tree");
                 this.decorateTree(json_data);
                 //console.log(json_data);
+            }
+            else{
+                
+                var fields = this.getModelFields().default;
+                console.log("convert json data to array: ", fields[0].name, fields[1].name);
+
+                //console.log(Object.keys(json_data).length);
+                var new_json_data = [];
+
+                var f0 = fields[0].name;
+                var f1 = fields[1].name;
+
+                for(var id in json_data){
+                    var item = {};
+                    item[f0] = id;
+                    item[f1] = json_data[id];
+                    new_json_data.push(item);
+                }
+                //console.log(new_json_data);
+
+                json_data = {};
+                json_data.default = new_json_data;
             }
 
         } else if(datasetfilename.search(/.csv$/) != -1) {
