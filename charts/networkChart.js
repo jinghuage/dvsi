@@ -37,14 +37,6 @@ d3.chart.networkChart = function() {
             //console.log(nodes);
             //console.log(links);
 
-            // make sure links array has attribute value -- d3.sankey assumes
-            // if( d3.keys(links[0]).indexOf("value") == -1){
-            //     links = links.map(function(d,i){ 
-            //         d.value = d[valueField];
-            //         return d;
-            //     });
-            // }
-
             // for each real node, insert a pair of anchor nodes for its label placement, 
             // add a link between each pair of anchors
             // by using a force layout on the anchor nodes, the pairs will be repelling each other
@@ -93,24 +85,84 @@ d3.chart.networkChart = function() {
 
             if(svg[0][0] === null) svg = svg.enter().append("svg");
 
-            
+            //console.log(svg.node());            
             svg.attr("width", width)
                 .attr("height", height);
 
+            //-----------------------------------------------------------------------------
+            var zoom = d3.behavior.zoom()
+                .scale(1)
+                .scaleExtent([1, 8])
+                .translate([0, 0])
+                .on("zoom", zoomed);
+
+            function zoomed() {
+                //var zscale = zoom.scale();
+                //var ztranslate = zoom.translate();
+                
+                graphg.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+            }
+
             var graphg = svg.append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top +")");
+            .attr("transform", "translate(" + margin.left + "," + margin.top +")")
+            .call(zoom);
 
-            //console.log(svg.node());
+            //this invisible rect will receive all mouse events in its area
+            //so mouse events will work not only just in "real" graph area
+            //var w = width - margin.left - margin.right,
+            //    h = height - margin.top - margin.bottom;
+            graphg.append("rect").attr("width", w).attr("height", h).attr("class", "overlay");
 
+            graphg.append("defs").append("clipPath")
+                .attr("id", "clip")
+                .append("rect")
+                .attr("width", w)
+                .attr("height", h);
+
+            // define arrow markers for graph links
+            graphg.append('defs').append('marker')
+                .attr('id', 'end-arrow')
+                .attr('viewBox', '0 -5 10 10')
+                .attr('refX', 36)
+                .attr('markerWidth', 3)
+                .attr('markerHeight', 3)
+                .attr('orient', 'auto')
+                .append('path')
+                .attr('d', 'M0,-5L10,0L0,5')
+                .attr('fill', '#000');
+
+            graphg.append('defs').append('marker')
+                .attr('id', 'start-arrow')
+                .attr('viewBox', '0 -5 10 10')
+                .attr('refX', 4)
+                .attr('markerWidth', 3)
+                .attr('markerHeight', 3)
+                .attr('orient', 'auto')
+                .append('path')
+                .attr('d', 'M10,-5L0,0L10,5')
+                .attr('fill', '#000');
 
             //-----------------------------------------------------------------------------
             // begin to draw the network
 
-	    var link = graphg.selectAll("line.link").data(links).enter().append("svg:line").attr("class", "link").style("stroke", "#CCC");
+	    var link = graphg.selectAll("line.link").data(links)
+                .enter().append("svg:line")
+                .attr("class", "link")
+                .style("stroke", "#CCC")
+                .style('stroke-width', 1)
+                .style('marker-end', 'url(#end-arrow)');
+                //.style('marker-start', 'url(#start-arrow)');
 
-	    var node = graphg.selectAll("g.node").data(force.nodes()).enter().append("svg:g").attr("class", "node");
-	    node.append("svg:circle").attr("r", 5).style("fill", "#555").style("stroke", "#FFF").style("stroke-width", 3);
-	    node.call(force.drag);
+	    var node = graphg.selectAll("g.node").data(force.nodes())
+                .enter().append("svg:g")
+                .attr("class", "node");
+	    node.append("svg:circle")
+                .attr("r", 5)
+                .style("fill", "#555")
+                .style("stroke", "#FFF")
+                .style("stroke-width", 3);
+
+	    node.call(force.drag); //todo: this interfere with global pan
 
 
 	    var anchorLink = graphg.selectAll("line.anchorLink").data(labelAnchorLinks)//.enter().append("svg:line").attr("class", "anchorLink").style("stroke", "#999");
