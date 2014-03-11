@@ -343,24 +343,27 @@ Ext.define('DVSI.controller.Data', {
             else{
                 
                 var fields = this.getModelFields().default;
-                console.log("convert json data to array: ", fields[0].name, fields[1].name);
 
-                //console.log(Object.keys(json_data).length);
-                var new_json_data = [];
+                if(fields){
+                    console.log("special occasion: convert json data to array: ", fields[0].name, fields[1].name);
 
-                var f0 = fields[0].name;
-                var f1 = fields[1].name;
+                    //console.log(Object.keys(json_data).length);
+                    var new_json_data = [];
 
-                for(var id in json_data){
-                    var item = {};
-                    item[f0] = id;
-                    item[f1] = json_data[id];
-                    new_json_data.push(item);
+                    var f0 = fields[0].name;
+                    var f1 = fields[1].name;
+
+                    for(var id in json_data){
+                        var item = {};
+                        item[f0] = id;
+                        item[f1] = json_data[id];
+                        new_json_data.push(item);
+                    }
+                    //console.log(new_json_data);
+
+                    json_data = {};
+                    json_data.default = new_json_data;
                 }
-                //console.log(new_json_data);
-
-                json_data = {};
-                json_data.default = new_json_data;
             }
 
         } else if(datasetfilename.search(/.csv$/) != -1) {
@@ -408,7 +411,7 @@ Ext.define('DVSI.controller.Data', {
 
     read_metadata: function(metadata) {
 
-        console.log("read_metadata");
+        console.log("read_metadata: ", metadata);
         
         var data_roots = [];
         var model_fields = {};
@@ -475,7 +478,7 @@ Ext.define('DVSI.controller.Data', {
         meta_panel.getView().refresh();
 
         var record = meta_store.getNodeById(this.getStoreRoot());
-        console.log("select record: ", record.data);
+        console.log("select current store_root: ", record.data);
 
         meta_panel.getSelectionModel().select(record);   
       

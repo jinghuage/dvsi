@@ -1,5 +1,5 @@
 d3.chart = d3.chart || {};
-console.log("d3.chart is : ", d3.chart);
+console.log("name space d3.chart is : ", d3.chart);
 
 /**
  * Dependency wheel chart for d3.js
