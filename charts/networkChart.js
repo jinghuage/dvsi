@@ -1,3 +1,9 @@
+//-----------------------------------------------------------------------------
+// d3 techniques : force layout
+// labeled force chart : http://bl.ocks.org/MoritzStefaner/1377729
+//-----------------------------------------------------------------------------
+
+
 //create namespace
 d3.chart = d3.chart || {};
 console.log("name space d3.chart is:", d3.chart);

@@ -1,5 +1,3 @@
-d3.chart = d3.chart || {};
-console.log("name space d3.chart is : ", d3.chart);
 
 /**
  * Dependency wheel chart for d3.js
@@ -32,6 +30,13 @@ console.log("name space d3.chart is : ", d3.chart);
  * @license MIT
  * @see https://github.com/fzaninotto/DependencyWheel for complete source and license
  */
+
+
+
+d3.chart = d3.chart || {};
+console.log("name space d3.chart is : ", d3.chart);
+
+
 d3.chart.dependencyWheelChart = function() {
 
     var width = 700;

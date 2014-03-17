@@ -1,3 +1,9 @@
+//-----------------------------------------------------------------------------
+// http://bost.ocks.org/mike/sankey/
+// d3 sankey plugin : https://github.com/d3/d3-plugins/tree/master/sankey
+//-----------------------------------------------------------------------------
+
+
 d3.sankey = function() {
   var sankey = {},
       nodeWidth = 24,

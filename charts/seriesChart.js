@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------------
+// d3 techniques : area and line chart, brush, stacked graph
+// Bostock's guidance toward reuseable charts: http://bost.ocks.org/mike/chart/
+// Stacked area chart : http://bl.ocks.org/mbostock/3885211
+// Brushing : http://bl.ocks.org/mbostock/1667367
+//-----------------------------------------------------------------------------
+
 //create namespace
 d3.chart = d3.chart || {};
 console.log("name space d3.chart is:", d3.chart);

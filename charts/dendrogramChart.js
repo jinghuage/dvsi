@@ -1,3 +1,9 @@
+//-----------------------------------------------------------------------------
+// d3 techniques : tree (cluster) layout, radial projection
+// dendrogram : http://bl.ocks.org/mbostock/4063570
+// radial projection: http://bl.ocks.org/mbostock/4063550
+//-----------------------------------------------------------------------------
+
 
 //create namespace
 d3.chart = d3.chart || {};

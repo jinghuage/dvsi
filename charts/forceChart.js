@@ -1,3 +1,8 @@
+//-----------------------------------------------------------------------------
+// d3 techniques : force layout, sorted nodes, tooltip
+// Bostock's example : http://www.nytimes.com/interactive/2012/02/13/us/politics/2013-budget-proposal-graphic.html?_r=0
+//-----------------------------------------------------------------------------
+
 
 //create namespace
 d3.chart = d3.chart || {};

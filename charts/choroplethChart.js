@@ -1,3 +1,8 @@
+//-----------------------------------------------------------------------------
+// d3 techniques: topojson, choropleth
+// Bostock: let's make a map: http://bost.ocks.org/mike/map/
+// choropleth: http://bl.ocks.org/mbostock/4060606
+//-----------------------------------------------------------------------------
 
 //create namespace
 d3.chart = d3.chart || {};
